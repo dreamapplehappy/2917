@@ -45,6 +45,8 @@
                 vm.appID = '101251241';
                 vm.redirectURI = 'http://www.2917.us/';
 
+                vm.callback = callback;
+
                 login();
 
                 function loginc(){
@@ -69,7 +71,7 @@
                     })
                 }
 
-                function handle(user){
+                function callback(user){
                     console.log(user,'user');
                 }
 
@@ -100,7 +102,7 @@
                         var accessToken = window.location.hash.substring(1);
                         //使用Access Token来获取用户的OpenID
                         var path = "https://graph.qq.com/oauth2.0/me?";
-                        var queryParams = [accessToken, 'callback=callback'];
+                        var queryParams = [accessToken, 'callback=vm.callback'];
                         var query = queryParams.join('&');
                         var url = path + query;
                         var script = document.createElement('script');
@@ -112,7 +114,7 @@
         })();
     </script>
     <script>
-        function callback(user)
+        function callbackp(user)
         {
             var userName = document.getElementById('userName');
             var greetingText = document.createTextNode('Greetings, '+ user.openid + '.');
