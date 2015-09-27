@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" ng-app="MyApp">
 <head>
     <meta charset="UTF-8">
     <title>2917</title>
@@ -7,8 +7,43 @@
     <!-- qq -->
     <meta property="qc:admins" content="2011546146621176537" />
 
+    <!-- app -->
+    <script src="http://cdn.bootcss.com/angular.js/1.4.0/angular.min.js"></script>
 </head>
-<body>
+<body ng-controller="MyController as vm">
     <h1>Welcome to 2917! ^_^</h1>
+    <hr/>
+    <button ng-click="vm.login()">QQ</button>
+
+
+    <!-- script -->
+    <script>
+        (function(){
+            angular.module('MyApp', [])
+                    .controller('MyController', MyController);
+
+            MyController.$inject = ['$http'];
+            function MyController($http){
+                var vm = this;
+                vm.login = login;
+                vm.qq_url = 'https://graph.qq.com/oauth2.0/authorize';
+                vm.params = {
+                    response_type: 'code',
+                    client_id: '101251241',
+                    redirect_uri: 'http://www.2917.us/',
+                    state: 1
+                };
+
+
+                function login(){
+                    console.log('login begin');
+                    $http.get(vm.qq_url, {params: vm.params})
+                            .then(function(res){
+                                console.log(res);
+                            })
+                }
+            }
+        })();
+    </script>
 </body>
 </html>
