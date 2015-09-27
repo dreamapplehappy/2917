@@ -102,7 +102,7 @@
                         var accessToken = window.location.hash.substring(1);
                         //使用Access Token来获取用户的OpenID
                         var path = "https://graph.qq.com/oauth2.0/me?";
-                        var queryParams = [accessToken, 'callback=vm.callback'];
+                        var queryParams = [accessToken, 'callback={{vm.callback}}'];
                         var query = queryParams.join('&');
                         var url = path + query;
                         var script = document.createElement('script');
