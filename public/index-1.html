@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en" ng-app="MyApp">
+<head>
+    <meta charset="UTF-8">
+    <title>2917</title>
+
+    <!-- qq -->
+    <meta property="qc:admins" content="2011546146621176537" />
+
+    <!-- app -->
+    <script src="http://cdn.bootcss.com/angular.js/1.4.0/angular.min.js"></script>
+</head>
+<body ng-controller="MyController as vm">
+    <h1>Welcome to 2917! <span id="userName"></span></h1>
+    <hr/>
+    <button ng-click="vm.login()">QQ</button>
+
+
+    <!-- script -->
+    <script>
+        (function(){
+            angular.module('MyApp', [])
+                    .config(config)
+                    .controller('MyController', MyController);
+
+            config.$inject = ['$httpProvider'];
+            MyController.$inject = ['$http', '$window', '$rootScope', '$location'];
+
+            function config($httpProvider){
+                $httpProvider.defaults.useXDomain = true;
+                delete $httpProvider.defaults.headers.common['X-Requested-With'];
+            }
+
+
+            function MyController($http, $window, $rootScope, $location){
+                var vm = this;
+                vm.login = login;
+                vm.qq_url = 'https://graph.qq.com/oauth2.0/authorize?';
+                vm.params = {
+                    response_type: 'code',
+                    client_id: '101251241',
+                    redirect_uri: 'http://www.2917.us/',
+                    state: 1
+                };
+                vm.appID = '101251241';
+                vm.redirectURI = 'http://www.2917.us/';
+
+                vm.callback = callback;
+
+                login();
+
+                function loginc(){
+//                    $http.jsonp(vm.qq_url + '?callback=handle' , {params: vm.params})
+//                            .then(function(res){
+//                                console.log(res, '123');
+//                            })
+                    var queryParams = ['client_id=' + vm.appID,
+                                       'redirect_uri=' + vm.redirectURI,
+                                       'state='+ 1,
+                                       'response_type=code'];
+                    var query = queryParams.join('&');
+                    var url = vm.qq_url + query;
+                    $window.location.href = url;
+
+                    console.log($location.search());
+
+
+                    $rootScope.$on('$routeChangeSuccess', function(event, next, pre){
+                        var hashComponents = $loaction.hash();
+                        console.log(hashComponents);
+                    })
+                }
+
+                function callback(user){
+                    console.log(user,'user');
+                }
+
+
+
+                function login(){
+                    //应用的APPID，请改为你自己的
+                    var appID = "101251241";
+                    //成功授权后的回调地址，请改为你自己的
+                    var redirectURI = "http://www.2917.us/";
+
+                    //构造请求
+                    if (window.location.hash.length == 0)
+                    {
+                        var path = 'https://graph.qq.com/oauth2.0/authorize?';
+                        var queryParams = ['client_id=' + appID,
+                            'redirect_uri=' + redirectURI,
+                            'scope=' + 'get_user_info,list_album,upload_pic,add_feeds,do_like',
+                            'response_type=token'];
+
+                        var query = queryParams.join('&');
+                        var url = path + query;
+                        window.open(url);
+                    }
+                    else
+                    {
+                        //获取access token
+                        var accessToken = window.location.hash.substring(1);
+                        //使用Access Token来获取用户的OpenID
+                        var path = "https://graph.qq.com/oauth2.0/me?";
+                        var queryParams = [accessToken, 'callback={{vm.callback}}'];
+                        var query = queryParams.join('&');
+                        var url = path + query;
+                        var script = document.createElement('script');
+                        script.src = url;
+                        document.body.appendChild(script);
+                    }
+                }
+            }
+        })();
+    </script>
+    <script>
+        function callbackp(user)
+        {
+            var userName = document.getElementById('userName');
+            var greetingText = document.createTextNode('Greetings, '+ user.openid + '.');
+            userName.appendChild(greetingText);
+        }
+    </script>
+</body>
+</html>
